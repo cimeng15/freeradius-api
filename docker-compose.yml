@@ -1,0 +1,49 @@
+# Docker Compose untuk development lokal (Mac/Windows/Linux)
+#
+# Mode 1: Jika sudah punya MySQL sendiri (default)
+#   → Hanya jalankan FreeRADIUS, connect ke MySQL yang sudah ada
+#   → docker compose up -d freeradius
+#
+# Mode 2: Jika belum punya MySQL
+#   → Jalankan semua: docker compose --profile full up -d
+#
+# Setelah running:
+#   - FreeRADIUS: localhost:1812/udp (auth), localhost:1813/udp (acct)
+#   - Laravel: php artisan serve (tetap di host)
+
+services:
+  # MySQL Database (OPTIONAL - hanya jika belum punya MySQL)
+  # Aktifkan dengan: docker compose --profile full up -d
+  mysql:
+    image: mysql:8.0
+    container_name: radius-mysql
+    profiles: ["full"]
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: radius
+    ports:
+      - "3307:3306"   # Port 3307 agar tidak konflik dengan MySQL yang sudah ada
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+
+  # FreeRADIUS Server
+  freeradius:
+    image: freeradius/freeradius-server:latest
+    container_name: radius-server
+    restart: unless-stopped
+    ports:
+      - "1812:1812/udp"   # Authentication
+      - "1813:1813/udp"   # Accounting
+    volumes:
+      - ./docker/freeradius/clients.conf:/etc/freeradius/clients.conf
+      - ./docker/freeradius/mods-enabled/sql:/etc/freeradius/mods-enabled/sql
+      - ./docker/freeradius/sites-enabled/default:/etc/freeradius/sites-enabled/default
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # Agar bisa akses MySQL di host
+    environment:
+      TZ: Asia/Jakarta
+
+volumes:
+  mysql_data:
