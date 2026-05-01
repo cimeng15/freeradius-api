@@ -48,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Routers
         Route::apiResource('routers', RouterController::class);
-        Route::post('routers/{router}/test', [RouterController::class, 'testConnection']);
+        Route::post('routers/{router}/test', [RouterController::class, 'test']);
         Route::get('routers/{router}/statistics', [RouterController::class, 'statistics']);
 
         // Resellers

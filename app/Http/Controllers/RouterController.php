@@ -164,7 +164,7 @@ class RouterController extends Controller
     /**
      * Test router connection
      */
-    public function testConnection($id)
+    public function test($id)
     {
         $router = Router::findOrFail($id);
 
