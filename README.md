@@ -2,7 +2,32 @@
 
 Sistem billing terintegrasi dengan FreeRADIUS untuk manajemen Hotspot (Voucher) dan PPPoE Client.
 
-## 🚀 Quick Start (5 Menit!)
+## 🚀 Quick Deploy (aaPanel)
+
+### Deployment Cepat
+```bash
+# 1. Upload project ke server
+cd /www/wwwroot/billing.syakirulilmi.my.id
+
+# 2. Setup .env
+cp .env.example .env
+nano .env  # Edit database credentials
+
+# 3. Deploy otomatis
+chmod +x deploy-simple.sh
+bash deploy-simple.sh
+
+# 4. Set ownership
+sudo chown -R www:www .
+```
+
+**Selesai!** Akses: `https://billing.syakirulilmi.my.id`
+
+📖 **Panduan Lengkap**: [DEPLOY_AAPANEL.md](DEPLOY_AAPANEL.md)
+
+---
+
+## 🏠 Local Development
 
 ### 1. Setup Laravel Application
 ```bash
@@ -20,9 +45,14 @@ sudo ./install-freeradius.sh
 ./configure-mikrotik.sh
 ```
 
-### 4. Start Server
+### 4. Start Development Server
 ```bash
+# Backend
 php artisan serve
+
+# Frontend (terminal baru)
+cd frontend
+npm run dev
 ```
 
 **Done!** 🎉 Sistem siap digunakan!

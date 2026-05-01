@@ -13,6 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Serve React app
+Route::get('/{any}', function () {
+    $indexPath = public_path('app/index.html');
+    
+    if (file_exists($indexPath)) {
+        return response()->file($indexPath);
+    }
+    
+    return response()->json([
+        'error' => 'Frontend not built',
+        'message' => 'Please run: cd frontend && npm install && npm run build'
+    ], 503);
+})->where('any', '^(?!api|storage).*$');
